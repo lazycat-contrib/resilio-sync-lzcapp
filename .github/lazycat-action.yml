@@ -1,0 +1,38 @@
+version: 1
+
+project:
+  root: .
+  build_config: lzc-build.yml
+  package_file: package.yml
+  output: .lazycat-build/resilio-sync.lpk
+  target_arch: amd64
+
+update:
+  strategy: publish
+  allow_downgrade: false
+  version_source:
+    type: image
+    image: resilio-sync
+build:
+  run_buildscript: false
+images:
+  # linuxserver 上游 3.x.y 稳定版本家族（immutable semver），排除构建号/年份干扰 tag
+  - id: resilio-sync
+    target: service
+    service: resilio-sync
+    source: linuxserver/resilio-sync
+    channel: stable
+    sort: semver
+    tag_regex: '^3\.\d+\.\d+$'
+    delivery:
+      mode: mirror
+
+stores:
+  official:
+    # Official store publication is intentionally disabled; publish only to Miaomiao Store.
+    enabled: false
+  private:
+    enabled: true
+    skip_if_version_exists: true
+    name: ResilioSync
+    summary: "使用 BitTorrent 协议在您的所有设备之间同步文件和文件夹"

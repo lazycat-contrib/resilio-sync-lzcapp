@@ -1,0 +1,23 @@
+application:
+  subdomain: resilio-sync
+  multi_instance: true
+  upstreams:
+    - location: /
+      backend: http://resilio-sync:8888/
+  ingress:
+    - protocol: tcp
+      port: 5555
+      service: resilio-sync
+
+services:
+  resilio-sync:
+    # upstream: linuxserver/resilio-sync:3.1.2
+    image: docker.1ms.run/linuxserver/resilio-sync:3.1.2
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Shanghai
+    binds:
+      - /lzcapp/var/config:/config
+      - /lzcapp/var/downloads:/downloads
+      - /lzcapp/var/data:/sync
